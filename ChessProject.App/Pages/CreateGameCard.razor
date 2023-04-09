@@ -1,0 +1,54 @@
+@using System.Text
+
+<MudCard Class="m-1 cursor-pointer" Elevation="@Elevation" Style="@Styles"
+          @onclick="CardClicker" @onmouseover="() => MouseOn(20)" @onmouseout=" () => MouseOn(1)">
+    <MudCardContent>
+        <MudText Typo="Typo.h5" Align="Align.Center">@TimeControl.ToString() + @Increment.ToString()</MudText>
+        <MudText Typo="Typo.h6" Align="Align.Center">@Variant</MudText>
+    </MudCardContent>
+</MudCard>
+
+@code {
+    [Inject] public NavigationManager NavigationManager { get; set; }
+    
+    [Parameter] public int TimeControl { get; set; }
+    [Parameter] public int Increment { get; set; }
+    [Parameter] public string? Variant { get; set; }
+    [Parameter] public string? Width { get; set; }
+    
+    private string? Styles { get; set; }
+    private int Elevation { get; set; } = 1;
+
+    protected override void OnInitialized()
+    {
+        var sb = new StringBuilder();
+        sb.Append("background: dimgrey; ");
+        sb.Append($"width: {Width}");
+        Styles = sb.ToString();
+    }
+
+    private void CardClicker()
+    {
+        //Implement game pairing services and so on.
+        NavigationManager.NavigateTo("/game");
+    }
+
+    private void MouseOn(int newValue)
+    {
+        var sb = new StringBuilder();
+        Elevation = newValue;
+        if (newValue > 1)
+        {
+            sb.Append("background: LightCyan; opacity: 0.5;");
+            sb.Append($"width: {Width}");
+            Styles = sb.ToString();
+        }
+        else
+        {
+            sb.Append("background: dimgrey;");
+            sb.Append($"width: {Width}");
+            Styles = sb.ToString();
+        }
+    }
+
+}

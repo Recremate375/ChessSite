@@ -1,9 +1,33 @@
 ﻿@page "/"
 
-<PageTitle>Index</PageTitle>
-
-<h1>Hello, world!</h1>
-
-Welcome to your new app.
-
-<Chessgame></Chessgame>
+<MudGrid Class="mt-5 align-content-center">
+    <MudItem md="3">
+        
+    </MudItem>
+    <MudItem md="6">
+        <MudGrid>
+            <MudContainer Class="d-flex align-content-start">
+                <CreateGameCard TimeControl="1" Increment="0" Variant="Bullet" Width="30%"/>
+                <CreateGameCard TimeControl="2" Increment="1" Variant="Bullet" Width="30%"/>
+                <CreateGameCard TimeControl="3" Increment="0" Variant="Blitz" Width="30%"/>
+            </MudContainer>
+            <MudContainer Class="d-flex align-content-start">
+                <CreateGameCard TimeControl="3" Increment="2" Variant="Blitz" Width="30%"></CreateGameCard>
+                <CreateGameCard TimeControl="5" Increment="0" Variant="Blitz" Width="30%"/>
+                <CreateGameCard TimeControl="5" Increment="3" Variant="Blitz" Width="30%"/>
+            </MudContainer>
+            <MudContainer Class="d-flex align-content-start">
+                <CreateGameCard TimeControl="10" Increment="0" Variant="Rapid" Width="30%"></CreateGameCard>
+                <CreateGameCard TimeControl="10" Increment="5" Variant="Rapid" Width="30%"/>
+                <CreateGameCard TimeControl="15" Increment="10" Variant="Rapid" Width="30%"/>
+            </MudContainer>
+            <MudContainer Class="d-flex align-content-start">
+                <CreateGameCard TimeControl="30" Increment="0" Variant="Classical" Width="30%"></CreateGameCard>
+                <CreateGameCard TimeControl="30" Increment="20" Variant="Classical" Width="30%"/>
+            </MudContainer>
+        </MudGrid>
+    </MudItem>
+    <MudItem md="3">
+        
+    </MudItem>
+</MudGrid>

@@ -2,16 +2,16 @@ using Microsoft.AspNetCore.Components.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using ChessProject.App.Areas.Identity;
-using ChessProject.App.Data;
 using ChessProject.Infrastracture.Dal;
+using MudBlazor.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 var connectionString = builder.Configuration.GetConnectionString("DefaultConnection") ??
                        throw new InvalidOperationException("Connection string 'DefaultConnection' not found.");
-builder.Services
-    .AddDbContextFactory<ChessProjectDbContext>(options => options.UseSqlServer());
+builder.Services.AddDbContextFactory<ChessProjectDbContext>(options => 
+        options.UseSqlServer(connectionString));
 builder.Services.AddDbContext<ChessProjectDbContext>(options =>
     options.UseSqlServer(connectionString));
 builder.Services.AddDatabaseDeveloperPageExceptionFilter();
@@ -26,7 +26,8 @@ builder.Services.AddRazorPages();
 builder.Services.AddServerSideBlazor();
 builder.Services
     .AddScoped<AuthenticationStateProvider, RevalidatingIdentityAuthenticationStateProvider<IdentityUser>>();
-builder.Services.AddSingleton<WeatherForecastService>();
+
+builder.Services.AddMudServices();
 
 var app = builder.Build();
 

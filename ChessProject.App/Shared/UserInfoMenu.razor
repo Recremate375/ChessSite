@@ -1,0 +1,26 @@
+
+<MudContainer>
+    <MudMenu Label="@Username" Dense="true" AnchorOrigin="Origin.BottomLeft" TransformOrigin="Origin.TopLeft">
+        <MudMenuItem>
+            <MudContainer Class="d-flex justify-content-start">
+                <MudIcon Icon="@Icons.Rounded.AccountCircle" Style="margin-right: 5px"></MudIcon>
+                <MudText>Profile</MudText>
+                <MudText>Exit</MudText>
+            </MudContainer>
+        </MudMenuItem>
+    </MudMenu>
+</MudContainer>
+
+
+@code {
+    [Inject] AuthenticationStateProvider AuthStateTask { get; set; }
+    [Inject] NavigationManager Navigation { get; set; }
+    
+    public string? Username { get; set; }
+
+    protected override async Task OnInitializedAsync()
+    {
+        var authState = await AuthStateTask.GetAuthenticationStateAsync();
+        Username = authState?.User?.Identity?.Name;
+    }
+}

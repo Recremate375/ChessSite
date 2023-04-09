@@ -1,0 +1,30 @@
+@inject NavigationManager Navigation;
+
+
+<AuthorizeView>
+    <Authorized>
+        <MudContainer Class="d-flex justify-content-end">
+            <UserInfoMenu/>
+        </MudContainer>
+    </Authorized>
+    <NotAuthorized>
+        <MudContainer Class="d-flex justify-content-end">
+            <MudButton Variant="Variant.Text" @onclick="() => OnLoginClick()">Log in</MudButton>
+            <MudDivider Vertical="true"></MudDivider>
+            <MudButton Variant="Variant.Text" @onclick="() => OnRegisterClick()">Register</MudButton>
+        </MudContainer>
+    </NotAuthorized>
+</AuthorizeView>
+
+@code {
+
+    private void OnLoginClick()
+    {
+        Navigation.NavigateTo("/Identity/Account/Login", true);
+    }
+
+    private void OnRegisterClick()
+    {
+        Navigation.NavigateTo("/Identity/Account/Register", true);
+    }
+}

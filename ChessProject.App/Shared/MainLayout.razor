@@ -1,20 +1,20 @@
 ﻿@inherits LayoutComponentBase
 
-<PageTitle>ChessProject.App</PageTitle>
+<MudThemeProvider IsDarkMode="true"/>
+<MudDialogProvider/>
+<MudSnackbarProvider/>
 
-<div class="page">
-    <div class="sidebar">
-        <NavMenu/>
-    </div>
-
-    <main>
-        <div class="top-row px-4 auth">
-            <LoginDisplay/>
-            <a href="https://docs.microsoft.com/aspnet/" target="_blank">About</a>
-        </div>
-
-        <article class="content px-4">
+<MudLayout>
+    <MudAppBar Elevation="1" Fixed="true" Dense="true">
+        <MudIcon Icon="@Icons.Custom.Uncategorized.ChessKing"></MudIcon>
+        <MudText Typo="Typo.h5">ModChess</MudText>
+        <AppBarMenu></AppBarMenu>
+        <MudSpacer></MudSpacer>
+        <UserMenu></UserMenu>
+    </MudAppBar>
+    <MudMainContent>
+        <MudContainer>
             @Body
-        </article>
-    </main>
-</div>
+        </MudContainer>
+    </MudMainContent>
+</MudLayout>
