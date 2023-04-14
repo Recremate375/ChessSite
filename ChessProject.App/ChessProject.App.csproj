@@ -22,10 +22,7 @@
     </ItemGroup>
 
     <ItemGroup>
-      <Folder Include="wwwroot\js\" />
-    </ItemGroup>
-
-    <ItemGroup>
+      <ProjectReference Include="..\ChessProject.Application\ChessProject.Application.csproj" />
       <ProjectReference Include="..\ChessProject.Infrastracture.Dal\ChessProject.Infrastracture.Dal.csproj" />
     </ItemGroup>
 

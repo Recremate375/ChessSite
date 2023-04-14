@@ -1,13 +1,62 @@
-@page "/game"
+@page "/game/{text}"
+@using ChessProject.Domain.Models
+@using System.Configuration
 
-<MudGrid Class="mt-4">
-    <MudItem md="6" sm="12">
-        <MudContainer Class="d-flex flex-column">
-            <div class="row">
-                <div class="col-md-12">
-                    <div id="board" style="width: 90%;"></div>
-                </div>
-            </div>
-        </MudContainer>
-    </MudItem>
-</MudGrid>
+<AuthorizeView>
+    <Authorized>
+        <MudText Typo="Typo.h4">@OponentName</MudText>
+         
+        <MudGrid Class="mt-4 align-content-center">
+            <MudItem md="6" sm="12">
+                <MudContainer Class="d-flex flex-column">
+                    <div class="row">
+                        <div class="col-md-12">
+                            <div id="board" style="width: 90%;"></div>
+                        </div>
+                    </div>
+                </MudContainer>
+            </MudItem>
+            <MudItem md="6" sm="12">
+                <MudCardContent>
+                    <div class="time">
+                        @Opponentminutes
+                        <span>:</span>
+                        @Opponentseconds
+                    </div>
+                </MudCardContent>
+                <MudCardContent>
+                    <div class="h4">
+                        @LastWhiteMove
+                    </div>
+                </MudCardContent>
+                <MudCardContent>
+                    <div class="time">
+                        @Myminutes
+                        <span>:</span>
+                        @Myseconds
+                    </div>
+                </MudCardContent>
+            </MudItem>
+        </MudGrid>
+        <MudText Typo="Typo.h4">@Name</MudText>
+    </Authorized>
+    <NotAuthorized>
+        <MudText Typo="Typo.h3">Please sign in your account or register new Account</MudText>
+    </NotAuthorized>
+</AuthorizeView>
+
+@code
+{
+    [Parameter] public string? Text { get; set; }
+
+    [Parameter]
+    public string? Myminutes { get; set; } = "05";
+
+    [Parameter]
+    public string? Myseconds { get; set; } = "00";
+    [Parameter]
+    public string? Opponentminutes { get; set; } = "05";
+
+    [Parameter]
+    public string? Opponentseconds { get; set; } = "00";
+}

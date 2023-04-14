@@ -1,4 +1,8 @@
 @using System.Text
+@using ChessProject.Application.Lobby
+@using ChessProject.Domain.Models
+@using ChessProject.Infrastracture.Dal
+@implements IDisposable;
 
 <MudCard Class="m-1 cursor-pointer" Elevation="@Elevation" Style="@Styles"
           @onclick="CardClicker" @onmouseover="() => MouseOn(20)" @onmouseout=" () => MouseOn(1)">
@@ -9,16 +13,19 @@
 </MudCard>
 
 @code {
-    [Inject] public NavigationManager NavigationManager { get; set; }
+    [Inject] protected AuthenticationStateProvider AuthState { get; set; }
+    [Inject] private NavigationManager NavigationManager { get; set; }
+    [Inject] private LobbyService Lobby { get; set; }
+    [Inject] private ChessProjectDbContext _ctx { get; set; }
     
     [Parameter] public int TimeControl { get; set; }
     [Parameter] public int Increment { get; set; }
     [Parameter] public string? Variant { get; set; }
     [Parameter] public string? Width { get; set; }
-    
+    [Parameter] public ChessPlayer Player { get; set; }
+
     private string? Styles { get; set; }
     private int Elevation { get; set; } = 1;
-
     protected override void OnInitialized()
     {
         var sb = new StringBuilder();
@@ -29,8 +36,26 @@
 
     private void CardClicker()
     {
-        //Implement game pairing services and so on.
-        NavigationManager.NavigateTo("/game");
+        var preference = new PairingPreference()
+        {
+            TimeControle = TimeControl,
+            Increment = Increment,
+            SidePreference = SidePreference.Random
+        };
+        var auth = AuthState;
+        var authTask = auth.GetAuthenticationStateAsync().Result;
+        if (authTask.User.Identity != null && !authTask.User.Identity.IsAuthenticated)
+        {
+            NavigationManager.NavigateTo("/Identity/Account/Login", true);
+        }
+        string? personName = authTask?.User?.Identity?.Name;
+        string? identityId = _ctx.Users.Where(u => u.UserName == personName).Select(x => x.Id).FirstOrDefault();
+        Player = _ctx.Players.FirstOrDefault(p => p.IdentityId == identityId);
+        Lobby.AddPlayerToLobby(Player, preference);
+        
+        //Lobby.OnGameCreated += RedirectToGame;
+        ChessGame game = Lobby.checkGame(Player);
+        RedirectToGame(game);
     }
 
     private void MouseOn(int newValue)
@@ -39,7 +64,7 @@
         Elevation = newValue;
         if (newValue > 1)
         {
-            sb.Append("background: LightCyan; opacity: 0.5;");
+            sb.Append("background: LightCyan; ");
             sb.Append($"width: {Width}");
             Styles = sb.ToString();
         }
@@ -51,4 +76,19 @@
         }
     }
 
+    public void Dispose()
+    {
+        //Lobby.OnGameCreated -= RedirectToGame;
+        //Lobby.RemovePlayerFromLobby(Player);
+    }
+
+    private void RedirectToGame(ChessGame newGame)
+    {
+        var parameters = new Dictionary<string, object>
+        {
+            {"_chessgame", newGame}
+        };
+        //Lobby.OnGameCreated -= RedirectToGame;
+        NavigationManager.NavigateTo($"/game/{newGame.UniqId.ToString()}");
+    }
 }

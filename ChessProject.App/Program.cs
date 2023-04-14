@@ -2,6 +2,7 @@ using Microsoft.AspNetCore.Components.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using ChessProject.App.Areas.Identity;
+using ChessProject.Application.Lobby;
 using ChessProject.Infrastracture.Dal;
 using MudBlazor.Services;
 
@@ -26,9 +27,10 @@ builder.Services.AddRazorPages();
 builder.Services.AddServerSideBlazor();
 builder.Services
     .AddScoped<AuthenticationStateProvider, RevalidatingIdentityAuthenticationStateProvider<IdentityUser>>();
-
 builder.Services.AddMudServices();
 
+builder.Services.AddSingleton<LobbyService>();
+//builder.Services.AddSignalR();
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
@@ -50,6 +52,7 @@ app.UseStaticFiles();
 app.UseRouting();
 
 app.UseAuthorization();
+app.UseAuthentication();
 
 app.MapControllers();
 app.MapBlazorHub();

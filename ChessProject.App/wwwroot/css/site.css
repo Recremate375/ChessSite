@@ -41,6 +41,20 @@ html, body {
     color: white;
 }
 
-    .blazor-error-boundary::after {
-        content: "An error has occurred."
-    }
+.blazor-error-boundary::after {
+    content: "An error has occurred."
+}
+
+.time{
+    background: rgba(0,0,0,.6);
+    min-width: 3em;
+    font-size: 2.8em;
+    line-height: 50px;
+    font-weight: bold;
+    padding: 0 2vmin;
+    white-space: nowrap;
+    will-change: transform;
+    z-index: -1;
+    display: flex;
+    direction: ltr;
+}

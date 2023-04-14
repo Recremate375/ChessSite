@@ -1,4 +1,3 @@
-
 let cwkChessBoard;
 let cwkChessGame;
 
@@ -6,7 +5,7 @@ var renderBoard = function(position, orientation, playingColor) {
 
 
     cwkChessGame = new Chess(position);
-    
+
     function onDragStart(source, piece, position, orientation) {
         if(cwkChessGame.game_over()) return false;
 
@@ -19,7 +18,7 @@ var renderBoard = function(position, orientation, playingColor) {
         var move = cwkChessGame.move({
             from: source,
             to: target,
-            promotion: 'q'
+            //promotion: 'q'
         });
 
 
@@ -31,18 +30,18 @@ var renderBoard = function(position, orientation, playingColor) {
         cwkChessBoard.position(cwkChessGame.fen());
         let history = cwkChessGame.history();
         let lastMove = history[history.length - 1]
-        DotNet.invokeMethodAsync('ChessProject.Blazor', 'AuthenticatedPlayerMoved', lastMove);
+        DotNet.invokeMethodAsync('ChessProject.App.Chessgame', 'AuthenticatedPlayerMoved', lastMove);
     }
 
     var config = {
-        orientation: orientation,
+        orientation: "white",
         draggable: true,
         position: position,
         onDragStart: onDragStart,
         onDrop: onDrop,
         onSnapEnd: onSnapEnd
     };
-
+    
     cwkChessBoard = Chessboard('board', config);
 }
 
@@ -65,7 +64,7 @@ function getGameResult() {
             switch(winner) {
                 case 'w':
                     return '1-0';
-                case 'b': 
+                case 'b':
                     return '0-1';
             }
         }
@@ -75,7 +74,7 @@ function getGameResult() {
     }
 }
 
-function getWinner(){ 
+function getWinner(){
     if(cwkChessGame.game_over()) {
         if(cwkChessGame.in_checkmate() && cwkChessGame.turn() === 'w') return 'b';
         else return 'w';

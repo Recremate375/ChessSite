@@ -6,4 +6,9 @@
         <Nullable>enable</Nullable>
     </PropertyGroup>
 
+    <ItemGroup>
+      <ProjectReference Include="..\ChessProject.Domain\ChessProject.Domain.csproj" />
+      <ProjectReference Include="..\ChessProject.Infrastracture.Dal\ChessProject.Infrastracture.Dal.csproj" />
+    </ItemGroup>
+
 </Project>
