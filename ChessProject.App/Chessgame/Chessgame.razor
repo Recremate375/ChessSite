@@ -1,6 +1,4 @@
 @page "/game/{text}"
-@using ChessProject.Domain.Models
-@using System.Configuration
 
 <AuthorizeView>
     <Authorized>
@@ -19,14 +17,14 @@
             <MudItem md="6" sm="12">
                 <MudCardContent>
                     <div class="time">
-                        @Opponentminutes
+                        @Oponentminutes
                         <span>:</span>
-                        @Opponentseconds
+                        @Oponentseconds
                     </div>
                 </MudCardContent>
                 <MudCardContent>
                     <div class="h4">
-                        @LastWhiteMove
+                        @LastMove
                     </div>
                 </MudCardContent>
                 <MudCardContent>
@@ -44,19 +42,3 @@
         <MudText Typo="Typo.h3">Please sign in your account or register new Account</MudText>
     </NotAuthorized>
 </AuthorizeView>
-
-@code
-{
-    [Parameter] public string? Text { get; set; }
-
-    [Parameter]
-    public string? Myminutes { get; set; } = "05";
-
-    [Parameter]
-    public string? Myseconds { get; set; } = "00";
-    [Parameter]
-    public string? Opponentminutes { get; set; } = "05";
-
-    [Parameter]
-    public string? Opponentseconds { get; set; } = "00";
-}

@@ -92,6 +92,7 @@ namespace ChessProject.App.Areas.Identity.Pages.Account
                     var identityUserId = await _userManager.GetUserIdAsync(user);
                     var player = new ChessPlayer
                     {
+                        Login = Input.Email,
                         FirstName = Input.FirstName,
                         LastName = Input.LastName,
                         Description = Input.Description,

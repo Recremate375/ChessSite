@@ -21,8 +21,7 @@ var renderBoard = function(position, orientation, playingColor) {
             to: target,
             promotion: 'q'
         });
-
-
+        
         //illegal move
         if(move === null) return 'snapback';
     }
@@ -30,8 +29,8 @@ var renderBoard = function(position, orientation, playingColor) {
     function onSnapEnd(){
         cwkChessBoard.position(cwkChessGame.fen());
         let history = cwkChessGame.history();
-        let lastMove = history[history.length - 1]
-        DotNet.invokeMethodAsync('ChessProject.Blazor', 'AuthenticatedPlayerMoved', lastMove);
+        let lastMove = history[history.length - 1];
+        DotNet.invokeMethodAsync('ChessProject.App', 'AuthenticatedPlayerMoved', lastMove);
     }
 
     var config = {
@@ -45,7 +44,6 @@ var renderBoard = function(position, orientation, playingColor) {
 
     cwkChessBoard = Chessboard('board', config);
 }
-
 
 function makeOpponentMove(move) {
     cwkChessGame.move(move);

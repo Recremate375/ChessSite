@@ -71,6 +71,20 @@ namespace ChessProject.Infrastracture.Dal.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "TimeControls",
+                columns: table => new
+                {
+                    TimeControlId = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    Minutes = table.Column<int>(type: "int", nullable: false),
+                    Increment = table.Column<int>(type: "int", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_TimeControls", x => x.TimeControlId);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "AspNetRoleClaims",
                 columns: table => new
                 {
@@ -176,6 +190,43 @@ namespace ChessProject.Infrastracture.Dal.Migrations
                         onDelete: ReferentialAction.Cascade);
                 });
 
+            migrationBuilder.CreateTable(
+                name: "Games",
+                columns: table => new
+                {
+                    ChessGameId = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    UniqId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    PGN = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    WhiteChessPlayerId = table.Column<int>(type: "int", nullable: true),
+                    BlackChessPlayerId = table.Column<int>(type: "int", nullable: true),
+                    Result = table.Column<int>(type: "int", nullable: true),
+                    ResultReason = table.Column<int>(type: "int", nullable: true),
+                    DatePlayed = table.Column<DateTime>(type: "datetime2", nullable: true),
+                    TimeControlId = table.Column<int>(type: "int", nullable: false),
+                    RatingType = table.Column<int>(type: "int", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Games", x => x.ChessGameId);
+                    table.ForeignKey(
+                        name: "FK_Games_Players_BlackChessPlayerId",
+                        column: x => x.BlackChessPlayerId,
+                        principalTable: "Players",
+                        principalColumn: "ChessPlayerId");
+                    table.ForeignKey(
+                        name: "FK_Games_Players_WhiteChessPlayerId",
+                        column: x => x.WhiteChessPlayerId,
+                        principalTable: "Players",
+                        principalColumn: "ChessPlayerId");
+                    table.ForeignKey(
+                        name: "FK_Games_TimeControls_TimeControlId",
+                        column: x => x.TimeControlId,
+                        principalTable: "TimeControls",
+                        principalColumn: "TimeControlId",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
             migrationBuilder.CreateIndex(
                 name: "IX_AspNetRoleClaims_RoleId",
                 table: "AspNetRoleClaims",
@@ -214,6 +265,21 @@ namespace ChessProject.Infrastracture.Dal.Migrations
                 column: "NormalizedUserName",
                 unique: true,
                 filter: "[NormalizedUserName] IS NOT NULL");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Games_BlackChessPlayerId",
+                table: "Games",
+                column: "BlackChessPlayerId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Games_TimeControlId",
+                table: "Games",
+                column: "TimeControlId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Games_WhiteChessPlayerId",
+                table: "Games",
+                column: "WhiteChessPlayerId");
         }
 
         /// <inheritdoc />
@@ -235,13 +301,19 @@ namespace ChessProject.Infrastracture.Dal.Migrations
                 name: "AspNetUserTokens");
 
             migrationBuilder.DropTable(
-                name: "Players");
+                name: "Games");
 
             migrationBuilder.DropTable(
                 name: "AspNetRoles");
 
             migrationBuilder.DropTable(
                 name: "AspNetUsers");
+
+            migrationBuilder.DropTable(
+                name: "Players");
+
+            migrationBuilder.DropTable(
+                name: "TimeControls");
         }
     }
 }

@@ -12,9 +12,9 @@ public class ChessProjectDbContext : IdentityDbContext
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
-        modelBuilder.Entity<ChessGame>().HasOne(g => g.BlackChessPlayer).WithMany(g => g.BlackGames)
+        modelBuilder.Entity<ChessGame>().HasOne(g => g.BlackChessPlayer).WithMany()
             .HasForeignKey(g => g.BlackChessPlayerId).OnDelete(DeleteBehavior.NoAction);
-        modelBuilder.Entity<ChessGame>().HasOne(g => g.WhiteChessPlayer).WithMany(g => g.WhiteGames)
+        modelBuilder.Entity<ChessGame>().HasOne(g => g.WhiteChessPlayer).WithMany()
             .HasForeignKey(g => g.WhiteChessPlayerId).OnDelete(DeleteBehavior.NoAction);
         base.OnModelCreating(modelBuilder);
     }

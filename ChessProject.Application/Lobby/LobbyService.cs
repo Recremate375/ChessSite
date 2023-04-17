@@ -1,3 +1,4 @@
+using System.Diagnostics.CodeAnalysis;
 using ChessProject.Domain.Models;
 using ChessProject.Infrastracture.Dal;
 using Timer = System.Timers.Timer;
@@ -7,7 +8,7 @@ namespace ChessProject.Application.Lobby;
 public class LobbyService
 {
     public event Action<ChessGame>? OnGameCreated;
-    public Dictionary<Guid, ChessGame> OngoingGames { get; } = new();
+    public Dictionary<Guid, ChessGame> OngoingGames { get; set; }
     public Dictionary<ChessPlayer, PairingPreference> PlayersInOrder { get; set; } = new();
 
 
@@ -19,16 +20,21 @@ public class LobbyService
     public void AddPlayerToLobby(ChessPlayer player, PairingPreference preference)
     {
         PlayersInOrder.Add(player, preference);
-        var game = OngoingGames.Select(x => x.Value).Where(x =>
-                x.TimeControl.Minutes == preference.TimeControle && x.TimeControl.Increment == preference.Increment)
-            .ToList();
-        if (game.Count == 0)
+        ChessGame? game = new ChessGame();
+        if (OngoingGames is not null)
+        {
+            game = OngoingGames.FirstOrDefault(
+                x => x.Value.TimeControl.Minutes == preference.TimeControle
+                     && x.Value.TimeControl.Increment == preference.Increment).Value;
+        }
+
+        if ((game.WhiteChessPlayer == null && game.BlackChessPlayer == null) || game == null)
         {
             CreateGame(player, preference);
         }
         else
         {
-            StartGame(player, game[0]);
+            StartGame(player, game);
         }
     }
 
@@ -43,48 +49,60 @@ public class LobbyService
             if (random == 0)
             {
                 game.BlackChessPlayer = player;
+                game.BlackChessPlayerId = player.ChessPlayerId;
             }
             else
             {
                 game.WhiteChessPlayer = player;
+                game.WhiteChessPlayerId = player.ChessPlayerId;
             }
         }
 
         TimeControl timeControl = new TimeControl
         {
             Minutes = preference.TimeControle,
-            Increment = preference.Increment,
-            TimeControlId = 1
+            Increment = preference.Increment
         };
         game.TimeControl = timeControl;
         game.RatingType = RatingType.Rated;
+        if (OngoingGames == null)
+        {
+            OngoingGames = new();
+        }
         OngoingGames.Add(game.UniqId, game);
         WaitingConnection(game);
     }
 
-    public ChessGame checkGame(ChessPlayer player)
+    public ChessGame GetGameById(Guid id)
     {
-        var waitingGame = OngoingGames.Select(x => x.Value).
-            Where(x => x.WhiteChessPlayer == player || x.BlackChessPlayer == player).FirstOrDefault();
+        return OngoingGames[id];
+    }
+    public ChessGame СheckGame(ChessPlayer player)
+    {
+        ChessGame? waitingGame = OngoingGames.FirstOrDefault(
+            x => x.Value.BlackChessPlayer == player ||
+                 x.Value.WhiteChessPlayer == player).Value;
         OnGameCreated?.Invoke(waitingGame);
         return waitingGame;
     }
+
     public void WaitingConnection(ChessGame game)
     {
-        //Timer timer = new Timer();
-            while (game.WhiteChessPlayer != null && game.BlackChessPlayer != null)
+        ChessGame? waitingGame = game;
+        while(true)
+        {
+            if (waitingGame != null)
             {
-                var waitingGame = OngoingGames.Select(x => x.Value).Where(x => x.UniqId == game.UniqId).FirstOrDefault();
                 if (waitingGame.WhiteChessPlayer != null && waitingGame.BlackChessPlayer != null)
                 {
                     OnGameCreated?.Invoke(waitingGame);
-                    break;
-                }
-                else
-                {
-                    waitingGame = null;
+                    break; 
                 }
             }
+            
+            waitingGame = null;
+            waitingGame = OngoingGames.FirstOrDefault(x => x.Key == game.UniqId).Value;
+        }
     }
     private void StartGame(ChessPlayer player, ChessGame game)
     {
@@ -98,5 +116,4 @@ public class LobbyService
         }
         OngoingGames[game.UniqId] = game;
     }
-
 }

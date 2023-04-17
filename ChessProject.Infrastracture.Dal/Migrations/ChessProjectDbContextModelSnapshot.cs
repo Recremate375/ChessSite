@@ -33,6 +33,9 @@ namespace ChessProject.Infrastracture.Dal.Migrations
                     b.Property<int?>("BlackChessPlayerId")
                         .HasColumnType("int");
 
+                    b.Property<int?>("ChessPlayerId")
+                        .HasColumnType("int");
+
                     b.Property<DateTime?>("DatePlayed")
                         .HasColumnType("datetime2");
 
@@ -60,6 +63,8 @@ namespace ChessProject.Infrastracture.Dal.Migrations
                     b.HasKey("ChessGameId");
 
                     b.HasIndex("BlackChessPlayerId");
+
+                    b.HasIndex("ChessPlayerId");
 
                     b.HasIndex("TimeControlId");
 
@@ -95,6 +100,9 @@ namespace ChessProject.Infrastracture.Dal.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("LastName")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Login")
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<int>("RapidRating")
@@ -329,9 +337,13 @@ namespace ChessProject.Infrastracture.Dal.Migrations
             modelBuilder.Entity("ChessProject.Domain.Models.ChessGame", b =>
                 {
                     b.HasOne("ChessProject.Domain.Models.ChessPlayer", "BlackChessPlayer")
-                        .WithMany("BlackGames")
+                        .WithMany()
                         .HasForeignKey("BlackChessPlayerId")
                         .OnDelete(DeleteBehavior.NoAction);
+
+                    b.HasOne("ChessProject.Domain.Models.ChessPlayer", null)
+                        .WithMany("Games")
+                        .HasForeignKey("ChessPlayerId");
 
                     b.HasOne("ChessProject.Domain.Models.TimeControl", "TimeControl")
                         .WithMany()
@@ -340,7 +352,7 @@ namespace ChessProject.Infrastracture.Dal.Migrations
                         .IsRequired();
 
                     b.HasOne("ChessProject.Domain.Models.ChessPlayer", "WhiteChessPlayer")
-                        .WithMany("WhiteGames")
+                        .WithMany()
                         .HasForeignKey("WhiteChessPlayerId")
                         .OnDelete(DeleteBehavior.NoAction);
 
@@ -404,9 +416,7 @@ namespace ChessProject.Infrastracture.Dal.Migrations
 
             modelBuilder.Entity("ChessProject.Domain.Models.ChessPlayer", b =>
                 {
-                    b.Navigation("BlackGames");
-
-                    b.Navigation("WhiteGames");
+                    b.Navigation("Games");
                 });
 #pragma warning restore 612, 618
         }

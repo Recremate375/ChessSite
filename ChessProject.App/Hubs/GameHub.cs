@@ -1,3 +1,4 @@
+
 using Microsoft.AspNetCore.SignalR;
 
 namespace ChessProject.App.Hubs;
@@ -26,7 +27,7 @@ public class GameHub : Hub
     }
     public async Task JoinGame(string playerName)
     {
-        if (connectedUsers == 2)
+        if (connectedUsers > 2)
         {
             await Clients.Caller.SendAsync("GameFull");
             return;
@@ -37,9 +38,9 @@ public class GameHub : Hub
         await Clients.OthersInGroup("GameRoom").SendAsync("PlayerJoined", playerName);
     }
 
-    public async Task SendMove(string fen, bool canMove)
+    public async Task SendMove(string move)
     {
-        await Clients.OthersInGroup("GameRoom").SendAsync("PlayerMove", fen, canMove);
+        await Clients.OthersInGroup("GameRoom").SendAsync("PlayerMove", move);
     }
     
     public async Task LeaveGame()

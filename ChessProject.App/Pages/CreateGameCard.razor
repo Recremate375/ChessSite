@@ -54,7 +54,7 @@
         Lobby.AddPlayerToLobby(Player, preference);
         
         //Lobby.OnGameCreated += RedirectToGame;
-        ChessGame game = Lobby.checkGame(Player);
+        ChessGame game = Lobby.СheckGame(Player);
         RedirectToGame(game);
     }
 
@@ -78,17 +78,16 @@
 
     public void Dispose()
     {
-        //Lobby.OnGameCreated -= RedirectToGame;
         //Lobby.RemovePlayerFromLobby(Player);
     }
 
     private void RedirectToGame(ChessGame newGame)
     {
+        Lobby.RemovePlayerFromLobby(Player);
         var parameters = new Dictionary<string, object>
         {
             {"_chessgame", newGame}
         };
-        //Lobby.OnGameCreated -= RedirectToGame;
         NavigationManager.NavigateTo($"/game/{newGame.UniqId.ToString()}");
     }
 }

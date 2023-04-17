@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace ChessProject.Infrastracture.Dal.Migrations
 {
     [DbContext(typeof(ChessProjectDbContext))]
-    [Migration("20230414125812_Migration1")]
-    partial class Migration1
+    [Migration("20230414135729_Initial")]
+    partial class Initial
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)

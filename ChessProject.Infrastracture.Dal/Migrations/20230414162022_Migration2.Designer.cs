@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace ChessProject.Infrastracture.Dal.Migrations
 {
     [DbContext(typeof(ChessProjectDbContext))]
-    [Migration("20230408170658_Initial")]
-    partial class Initial
+    [Migration("20230414162022_Migration2")]
+    partial class Migration2
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -24,6 +24,57 @@ namespace ChessProject.Infrastracture.Dal.Migrations
                 .HasAnnotation("Relational:MaxIdentifierLength", 128);
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
+
+            modelBuilder.Entity("ChessProject.Domain.Models.ChessGame", b =>
+                {
+                    b.Property<int>("ChessGameId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("ChessGameId"));
+
+                    b.Property<int?>("BlackChessPlayerId")
+                        .HasColumnType("int");
+
+                    b.Property<int?>("ChessPlayerId")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime?>("DatePlayed")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("PGN")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("RatingType")
+                        .HasColumnType("int");
+
+                    b.Property<int?>("Result")
+                        .HasColumnType("int");
+
+                    b.Property<int?>("ResultReason")
+                        .HasColumnType("int");
+
+                    b.Property<int>("TimeControlId")
+                        .HasColumnType("int");
+
+                    b.Property<Guid>("UniqId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<int?>("WhiteChessPlayerId")
+                        .HasColumnType("int");
+
+                    b.HasKey("ChessGameId");
+
+                    b.HasIndex("BlackChessPlayerId");
+
+                    b.HasIndex("ChessPlayerId");
+
+                    b.HasIndex("TimeControlId");
+
+                    b.HasIndex("WhiteChessPlayerId");
+
+                    b.ToTable("Games");
+                });
 
             modelBuilder.Entity("ChessProject.Domain.Models.ChessPlayer", b =>
                 {
@@ -54,12 +105,34 @@ namespace ChessProject.Infrastracture.Dal.Migrations
                     b.Property<string>("LastName")
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<string>("Login")
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<int>("RapidRating")
                         .HasColumnType("int");
 
                     b.HasKey("ChessPlayerId");
 
                     b.ToTable("Players");
+                });
+
+            modelBuilder.Entity("ChessProject.Domain.Models.TimeControl", b =>
+                {
+                    b.Property<int>("TimeControlId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("TimeControlId"));
+
+                    b.Property<int>("Increment")
+                        .HasColumnType("int");
+
+                    b.Property<int>("Minutes")
+                        .HasColumnType("int");
+
+                    b.HasKey("TimeControlId");
+
+                    b.ToTable("TimeControls");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRole", b =>
@@ -264,6 +337,35 @@ namespace ChessProject.Infrastracture.Dal.Migrations
                     b.ToTable("AspNetUserTokens", (string)null);
                 });
 
+            modelBuilder.Entity("ChessProject.Domain.Models.ChessGame", b =>
+                {
+                    b.HasOne("ChessProject.Domain.Models.ChessPlayer", "BlackChessPlayer")
+                        .WithMany()
+                        .HasForeignKey("BlackChessPlayerId")
+                        .OnDelete(DeleteBehavior.NoAction);
+
+                    b.HasOne("ChessProject.Domain.Models.ChessPlayer", null)
+                        .WithMany("Games")
+                        .HasForeignKey("ChessPlayerId");
+
+                    b.HasOne("ChessProject.Domain.Models.TimeControl", "TimeControl")
+                        .WithMany()
+                        .HasForeignKey("TimeControlId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("ChessProject.Domain.Models.ChessPlayer", "WhiteChessPlayer")
+                        .WithMany()
+                        .HasForeignKey("WhiteChessPlayerId")
+                        .OnDelete(DeleteBehavior.NoAction);
+
+                    b.Navigation("BlackChessPlayer");
+
+                    b.Navigation("TimeControl");
+
+                    b.Navigation("WhiteChessPlayer");
+                });
+
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
                 {
                     b.HasOne("Microsoft.AspNetCore.Identity.IdentityRole", null)
@@ -313,6 +415,11 @@ namespace ChessProject.Infrastracture.Dal.Migrations
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+                });
+
+            modelBuilder.Entity("ChessProject.Domain.Models.ChessPlayer", b =>
+                {
+                    b.Navigation("Games");
                 });
 #pragma warning restore 612, 618
         }
