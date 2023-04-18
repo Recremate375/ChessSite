@@ -1,0 +1,77 @@
+<MudItem md="6" sm="12">
+    <MudCardContent>
+        <div class="time">
+            @Minutes
+            <span>:</span>
+            @Seconds
+        </div>
+    </MudCardContent>
+</MudItem>
+@code {
+    [Inject] IJSRuntime? JsRuntime { get; set; }
+    [Parameter] public string? Minutes { get; set; }    
+    [Parameter] public string? Seconds { get; set; }
+    [Parameter] public int Increment { get; set; }
+    [Parameter] public bool Turn { get; set; }
+    private CancellationTokenSource _cancellationTokenSource;
+    
+    protected override async Task OnInitializedAsync()
+    {
+        _cancellationTokenSource = new CancellationTokenSource();
+        await Task.Run(() => DecrementTime(_cancellationTokenSource.Token));
+    }
+
+    [JSInvokable]
+    public void GetTurn(bool _turn)
+    {
+        Turn = _turn;
+        _cancellationTokenSource.Cancel();
+        _cancellationTokenSource = new CancellationTokenSource();
+        _ = DecrementTime(_cancellationTokenSource.Token);
+    }
+    
+    private async Task DecrementTime(CancellationToken cancellationToken)
+    {
+        int Min = Int32.Parse(Minutes);
+        int Sec = Int32.Parse(Seconds);
+        while (Min > 0 || Sec > 0)
+        {
+            cancellationToken.ThrowIfCancellationRequested();
+            if (Turn)
+            {
+                if (Sec == 0)
+                {
+                    Min--;
+                    Sec = 59;
+                    if (Min < 10)
+                    {
+                        Minutes = "0" + Min.ToString();
+                    }
+                    else
+                    {
+                        Minutes = Min.ToString();
+                    }
+                    Seconds = Sec.ToString();
+                }
+                else
+                {
+                    Sec--;
+                    if (Sec < 10)
+                    {
+                        Seconds = "0" + Sec.ToString();
+                    }
+                    else
+                    {
+                        Seconds = Sec.ToString();
+                    }
+                }
+                await Task.Delay(1000, cancellationToken);
+                await InvokeAsync(StateHasChanged);
+            }
+            await Task.Delay(1000, cancellationToken);
+            Console.WriteLine($"Minutes: {Minutes}");
+        }
+        
+        //await JsRuntime.InvokeVoidAsync("timeLose");
+    }
+}

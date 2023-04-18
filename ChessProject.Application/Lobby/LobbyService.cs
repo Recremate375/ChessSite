@@ -57,7 +57,7 @@ public class LobbyService
                 game.WhiteChessPlayerId = player.ChessPlayerId;
             }
         }
-
+        
         TimeControl timeControl = new TimeControl
         {
             Minutes = preference.TimeControle,

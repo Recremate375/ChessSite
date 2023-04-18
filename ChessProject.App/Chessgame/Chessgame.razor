@@ -15,25 +15,13 @@
                 </MudContainer>
             </MudItem>
             <MudItem md="6" sm="12">
-                <MudCardContent>
-                    <div class="time">
-                        @Oponentminutes
-                        <span>:</span>
-                        @Oponentseconds
-                    </div>
-                </MudCardContent>
+                <TimeDisplay Minutes=@Myminutes Seconds=@Myseconds Increment=@Increment Turn=@Oppturn></TimeDisplay>
                 <MudCardContent>
                     <div class="h4">
-                        @LastMove
+
                     </div>
                 </MudCardContent>
-                <MudCardContent>
-                    <div class="time">
-                        @Myminutes
-                        <span>:</span>
-                        @Myseconds
-                    </div>
-                </MudCardContent>
+                <TimeDisplay Minutes=@Myminutes Seconds=@Myseconds Increment=@Increment Turn=@Myturn></TimeDisplay>
             </MudItem>
         </MudGrid>
         <MudText Typo="Typo.h4">@Name</MudText>

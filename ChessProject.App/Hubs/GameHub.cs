@@ -38,9 +38,9 @@ public class GameHub : Hub
         await Clients.OthersInGroup("GameRoom").SendAsync("PlayerJoined", playerName);
     }
 
-    public async Task SendMove(string move)
+    public async Task SendMove(string move, string fen)
     {
-        await Clients.OthersInGroup("GameRoom").SendAsync("PlayerMove", move);
+        await Clients.OthersInGroup("GameRoom").SendAsync("PlayerMove", move, fen);
     }
     
     public async Task LeaveGame()

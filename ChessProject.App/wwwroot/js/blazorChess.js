@@ -2,12 +2,16 @@
 let cwkChessBoard;
 let cwkChessGame;
 
+var SetDotNetHelper = function (objRef) {
+    window.dotNetHelper = objRef;
+}
+
 var renderBoard = function(position, orientation, playingColor) {
 
 
     cwkChessGame = new Chess(position);
     
-    function onDragStart(source, piece, position, orientation) {
+    function onDragStart(source, piece) {
         if(cwkChessGame.game_over()) return false;
 
         if(playingColor === 'w' &&piece.search(/^b/) !== -1) return false;
@@ -25,12 +29,13 @@ var renderBoard = function(position, orientation, playingColor) {
         //illegal move
         if(move === null) return 'snapback';
     }
-
+    
     function onSnapEnd(){
         cwkChessBoard.position(cwkChessGame.fen());
         let history = cwkChessGame.history();
         let lastMove = history[history.length - 1];
-        DotNet.invokeMethodAsync('ChessProject.App', 'AuthenticatedPlayerMoved', lastMove);
+        let fen = cwkChessBoard.position(cwkChessGame.fen());
+        window.dotNetHelper.invokeMethodAsync('AuthenticatedPlayerMoved', lastMove, fen);
     }
 
     var config = {
@@ -45,10 +50,14 @@ var renderBoard = function(position, orientation, playingColor) {
     cwkChessBoard = Chessboard('board', config);
 }
 
-function makeOpponentMove(move) {
+function makeOpponentMove(move, turn) {
     cwkChessGame.move(move);
     cwkChessBoard.position(cwkChessGame.fen());
+    window.dotNetHelper.invokeMethodAsync('GetTurn', turn);
+}
 
+function timeLose() {
+    cwkChessBoard.draggable = false;
 }
 
 function isGameOver(){
